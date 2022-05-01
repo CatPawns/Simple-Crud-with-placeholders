@@ -51,7 +51,8 @@ export default {
       vWidth: window.innerWidth,
       currentPage:1,
       trigger: 0,
-      perPage:8,
+      perPage:16,
+      toastMessage : "Welcome!",
       Enviroment : [ {"Api" : Server_API_URL , displayName : "Web"} , {"Api" :Loca_API_URL , displayName : "Local"}],
       selectedEnviroment:  "",
       todoId: 1,
@@ -109,6 +110,7 @@ export default {
     removeFromCollection(i , to){
       console.log(i,to)
             this.dataStream = this.dataStream.filter((t) => t.id !== i.id);
+            this.displaytoast("Entry removed from Collection");
 
       this.posts = this.posts.filter((t) => t.id !== i.id);
 
@@ -116,15 +118,16 @@ export default {
     addToCollection(i , start = 0, end=0)
     {
       //this.posts.splice()
-      this.displaytoast();
+      this.displaytoast("Entry added to Collection");
       this.dataStream.splice(start,end,i)
       this.posts.splice(start, end, i)
 
       //this.posts.push(i);
     },
-    displaytoast()
+    displaytoast(msg)
     {
       this.trigger++;
+      this.toastMessage = msg;
     },
       replaceCollection(json)
       {
@@ -188,6 +191,10 @@ let myInit = {
       );
       this.signal = await res.json();
     },
+    async deletePage()
+    {
+      this.posts.forEach(e => this.deleteData(e));
+    },
    async deleteData(i){
      
      let url = API_URL.concat(i.id)
@@ -200,8 +207,9 @@ let myInit = {
     async UploadData(i){
       
       this.signal = null;
-      let body = i.desc;
-      let title = i.name;
+      let body = i.body;
+      let name = i.name;
+      let email = i.email;
 
       let postId = 2
       console.log("posted$",i, "post ID", postId)
@@ -209,8 +217,8 @@ let myInit = {
       const res =  fetch_retry (API_URL, {
   method: 'POST',
   body: JSON.stringify({
-   
-    title: title,
+   email: email,
+    name: name,
     body: body,
   }),
   headers: {
@@ -307,16 +315,20 @@ this.posts.splice(index, 1, json)*/
   }
 };
 </script>
-
 <template>
+<Teleport to="body">
+<EnviSelector @changeServer=" (msg) => { selectedEnviroment = msg;}"></EnviSelector>
+<button class="btn btn-primary me-1" @click="GetList()">refresh </button>
+<button class="btn btn-danger me-1" @click="deletePage()">Delete Page </button>
+
+</Teleport>
 <b-alert show dismissible  >
     WIP! <b>&rArr;</b>
   </b-alert> 
-  <toast :mshow="trigger"  :message="'created a new entry'">toast</toast>
+  <toast :mshow="trigger"  :message="toastMessage">toast</toast>
 
   <div id="app">
 
-<EnviSelector @changeServer=" (msg) => { selectedEnviroment = msg;}"></EnviSelector>
 
 
 <div class="card mt-5" style="height: 540px">
@@ -399,6 +411,8 @@ this.posts.splice(index, 1, json)*/
 </div>
 </div>
 </div>
+
+
 <BPagination class="pagination-sm" 
       v-model="currentPage"
       :total-rows="dataStream.length"
@@ -427,6 +441,7 @@ this.posts.splice(index, 1, json)*/
   </div>
         </template>
         <template v-show="true" #body>
+        
         <div  v-show="selectedEnviroment != ''" >
         <p>Loading Database...</p>  
         <div class="spinner-border" role="status">
@@ -523,7 +538,7 @@ max-width : 60px
 .list-leave-active {
   transition: all 0.2s ease;
 }
-.list-enter-from
+.list-enter-from,
 .list-leave-to {
   opacity: 0;
   transform: scaleY(0.1) translateX(202px);

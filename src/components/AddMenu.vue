@@ -8,28 +8,28 @@ export default {
       loaded: false,
       iName: '',
       iDesc: '',
-      createdItem: { name: '', desc: '' },
+      FormData:{name:'', body:'', email:''},
+      createdItem: { name: '', body: '',  email :''},
     };
   },
   emits: ['response'],
   methods: {
     onSubmit() {
-      this.createdItem.name = this.iName;
-      this.createdItem.desc = this.iDesc;
-      this.iName = '';
-      this.iDesc = '';
+     
+      this.createdItem = this.FormData;
       this.$emit('response', this.createdItem);
+      this.FormData.name = '';
+      this.FormData.body = '';
+      this.FormData.email ='';
     },
     dorandom() {
-      this.createdItem.email = faker.internet.email();
-      this.createdItem.name = this.iName = faker.name.firstName();
-      this.createdItem.desc = this.iDesc = faker.name.jobTitle();
+      this.fillNoSubmit();
       this.onSubmit()
     },
       fillNoSubmit() {
-      this.createdItem.email = faker.internet.email();
-      this.createdItem.name = this.iName = faker.name.firstName();
-      this.createdItem.desc = this.iDesc = faker.name.jobTitle();
+      this.FormData.email = faker.internet.email();
+      this.FormData.name = faker.name.firstName();
+      this.FormData.body =  faker.name.jobTitle();
     },
   },
 };
@@ -45,7 +45,7 @@ export default {
         <label for="Name" class="form-label">Name</label>
         
             <input
-              v-model="iName"
+              v-model="FormData.name"
               type="text"
               class="form-control"
               id="Name"
@@ -55,7 +55,7 @@ export default {
             />
             <label for="sr" class="form-label">Email</label>
              <input
-              v-model="createdItem.email"
+              v-model="FormData.email"
               type="text"
               class="form-control"
               id="sr"
@@ -65,7 +65,7 @@ export default {
             />
             <label for="Description" class="form-label">Description</label>
              <input
-              v-model="iDesc"
+              v-model="FormData.body"
               class="form-control"
               id="Description"
               placeholder="Description"
