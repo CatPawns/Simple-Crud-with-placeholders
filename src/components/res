@@ -1,0 +1,70 @@
+             <Transition>
+  <button v-if="editing === true" v-model="editing=false">Edit</button>
+  <button v-else-if="editing === false">Save</button>
+</Transition>
+.me{
+   margin-right: 1em ;
+}
+@media (max-width: 600px) {
+  .me{
+   margin-top: 1em ;
+}
+}
+
+<template>
+  <div class="products">
+    <div class="card">
+      <!-- <div class="card-header text-white bg-secondary mb-2">Add Item</div> -->
+
+      <div class="card-body mt-2">
+        <form class="row g-3" v-on:submit.prevent="onSubmit">
+          <div class="col-sm">
+            <input
+              v-model="iName"
+              type="text"
+              class="form-control"
+              id="Name"
+              placeholder="Item"
+              required
+              autocomplete="off"
+            />
+             <input
+              v-model="createdItem.email"
+              type="text"
+              class="form-control"
+              id="email"
+              placeholder="Email"
+              required
+              autocomplete="off"
+            />
+
+             <input
+              v-model="iDesc"
+              class="form-control"
+              id="Description"
+              placeholder="Description"
+              required
+              autocomplete="off"
+            />
+          
+         
+           
+          <div class="d-grid gap-2 d-md-block">
+            <button type="submit" class="btn btn-primary mb-3">Submit</button>
+          </div>
+        </form>
+        
+        <div class="d-flex justify-content-start gap-3">
+          <button @click="dorandom()" class="btn btn-secondary  mb-3">
+            Fill and submit
+          </button>
+                  <div class="d-grid gap-2 d-md-block">
+          <button @click="fillNoSubmit()" class="btn btn-secondary  mb-3">
+            Fill no submit
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
